@@ -10,8 +10,14 @@ const domEvents = require('../vue/mixins/dom-events');
 const locale = require('../locale');
 const { passageDefaults } = require('../data/store/story');
 const zoomSettings = require('./zoom-settings');
+const { Planner, GoalNode, WorldState, AStar } = require('new-astar');
+
+const _ = require('lodash');
+//const GoapStuff = require('../goap-demo');
 
 require('./index.less');
+
+//GoapStuff.testPlan();
 
 /*
 A memoized, sorted array of zoom levels used when zooming in or out.
@@ -62,7 +68,9 @@ module.exports = Vue.extend({
 		*/
 
 		screenDragOffsetX: 0,
-		screenDragOffsetY: 0
+		screenDragOffsetY: 0,
+
+		goapPlanner: new Planner()
 	}),
 
 	computed: {
@@ -285,7 +293,7 @@ module.exports = Vue.extend({
 					name = origName + ' ' + nameIndex;
 				}
 				while
-					(this.story.passages.find(p => p.name === name));
+				(this.story.passages.find(p => p.name === name));
 			}
 
 			/* Add it to our collection. */
@@ -393,6 +401,55 @@ module.exports = Vue.extend({
 							p => this.deletePassage(this.story.id, p.id)
 						);
 					});
+					break;
+				}
+
+				case 75:{ //'k'
+					this.goapPlanner.actions = [];
+
+					let startNode, goalNode = null;
+
+					let startPassage = this.story.passages.find(passage => passage.id == this.story.startPassage);
+
+					this.story.passages.forEach(passage => {
+						if(passage.id == startPassage.id){
+							startNode = new GoalNode();
+							startNode.state = passage.goapAction.preconditions;
+
+							goalNode = new GoalNode();
+							goalNode.state = passage.goapAction.effects;
+						}
+						else{
+							this.goapPlanner.actions.push(passage.goapAction);
+						}
+					});
+
+					console.log("Number of actions:", this.goapPlanner.actions.length);
+					console.log("StartNode JSON", startNode);
+					console.log("GoalNode JSON", goalNode);
+
+					this.goapPlanner.preprocessGraph(startNode);
+
+
+					this.goapPlanner.allEdges.forEach((edge)=>{
+						let passage = this.story.passages.find(passage => passage.goapAction.name == edge.action.name);
+						let adjacentActionNames = edge.nextNode.adjacentEdges.map(adjacentEdge => adjacentEdge.action.name);
+						let otherPassages = this.story.passages.filter((passage) => adjacentActionNames.some(actionName => actionName == passage.name) );
+		
+						passage.otherPassages = otherPassages.map(passage => passage.name);
+					});
+
+					this.story.passages.forEach((passage) =>{
+						this.updatePassage(
+							this.story.id,
+							passage.id,
+							{
+								name: passage.name,
+								goapAction: passage.goapAction
+							}
+						);
+					});
+					
 					break;
 				}
 			}

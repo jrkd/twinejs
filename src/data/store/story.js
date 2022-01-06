@@ -7,6 +7,7 @@ const uuid = require('tiny-uuid');
 const locale = require('../../locale');
 const idFor = require('../id');
 const ui = require('../../ui');
+const { WorldState, NodeAction } = require('new-astar');
 
 /*
 A shorthand function for finding a particular story in the state, or a
@@ -176,7 +177,8 @@ const storyStore = (module.exports = {
 
 			try {
 				story = getStoryById(state, storyId);
-			} catch (e) {
+			}
+			catch (e) {
 				return;
 			}
 
@@ -197,7 +199,8 @@ const storyStore = (module.exports = {
 
 			try {
 				passage = getPassageInStory(story, passageId);
-			} catch (e) {
+			}
+			catch (e) {
 				return;
 			}
 
@@ -237,7 +240,7 @@ const storyStore = (module.exports = {
 		tags: [],
 		name: locale.say('Untitled Passage'),
 		selected: false,
-
+		goapAction: new NodeAction(),
 		text: ui.hasPrimaryTouchUI()
 			? locale.say('Tap this passage, then the pencil icon to edit it.')
 			: locale.say('Double-click this passage to edit it.')

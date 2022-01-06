@@ -11,6 +11,9 @@ affects startup time in the Twine desktop app. This module moves data from the
 filesystem into local storage, and the app can't begin until it's done.
 */
 
+const { WorldState, NodeAction } = require("new-astar");
+const _ = require('lodash');
+
 /* HTML selectors used to find data in HTML format. */
 
 const selectors =  {
@@ -90,6 +93,17 @@ function domToObject(storyEl, forceLastUpdate) {
 							.map(Math.floor);
 					}
 
+					let goapAction = new NodeAction();
+
+					goapAction.preconditions = new WorldState();
+					goapAction.effects = new WorldState();
+					if(passageEl.attributes.goapPreconditions){
+						goapAction.preconditions = _.extend(new WorldState(), JSON.parse(passageEl.attributes.goapPreconditions.value));
+					}
+					if(passageEl.attributes.goapEffects){
+						goapAction.effects = _.extend(new WorldState(), JSON.parse(passageEl.attributes.goapEffects.value));
+					}
+
 					return {
 						/* Again, a one-off id, not a database id. */
 
@@ -112,7 +126,10 @@ function domToObject(storyEl, forceLastUpdate) {
 						name:
 							passageEl.attributes.name.value,
 						text:
-							passageEl.textContent
+							passageEl.textContent,
+						goapAction:
+							goapAction
+						
 					};
 				})
 	};
@@ -126,5 +143,5 @@ module.exports = (html, lastUpdate) => {
 	return Array.from(
 		nodes.querySelectorAll(selectors.storyData)
 	)
-	.map(storyEl => domToObject(storyEl, lastUpdate));
+		.map(storyEl => domToObject(storyEl, lastUpdate));
 };

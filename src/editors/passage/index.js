@@ -9,6 +9,9 @@ const { thenable } = require('../../vue/mixins/thenable');
 const { changeLinksInStory, updatePassage } = require('../../data/actions/passage');
 const { loadFormat } = require('../../data/actions/story-format');
 const { passageDefaults } = require('../../data/store/story');
+const { NodeAction, WorldState } = require('new-astar');
+
+const _ = require('lodash');
 
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/hint/show-hint');
@@ -155,6 +158,7 @@ module.exports = Vue.extend({
 		},
 
 		canClose() {
+			
 			if (this.userPassageNameValid) {
 				if (this.userPassageName !== this.passage.name) {
 					//JR - Moved the below out of this chekc
@@ -166,13 +170,19 @@ module.exports = Vue.extend({
 					this.userPassageName
 				);
 
+				let goapAction = new NodeAction();
+
+				goapAction.name = this.userPassageName;
+				goapAction.cost = 1;//currently dont let them have different costs
+				goapAction.preconditions = _.extend(new WorldState(), JSON.parse(this.goapPreconditions));
+				goapAction.effects = _.extend(new WorldState(), JSON.parse(this.goapEffects));
+
 				this.updatePassage(
 					this.parentStory.id,
 					this.passage.id,
 					{
 						name: this.userPassageName,
-						goapEffects: this.goapEffects,
-						goapPreconditions: this.goapPreconditions
+						goapAction: goapAction
 					}
 				);
 				return true;
@@ -186,8 +196,8 @@ module.exports = Vue.extend({
 		this.userPassageName = this.passage.name;
 
 		//JR - set the view values from the model
-		this.goapPreconditions = this.passage.goapPreconditions;
-		this.goapEffects = this.passage.goapEffects;
+		this.goapPreconditions = JSON.stringify(this.passage.goapAction.preconditions);
+		this.goapEffects = JSON.stringify(this.passage.goapAction.effects);
 
 		/* Update the window title. */
 

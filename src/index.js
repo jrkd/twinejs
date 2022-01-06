@@ -1,5 +1,6 @@
 require('./index.less');
 
+
 /*
 The main entry point for the application.
 */
@@ -27,6 +28,7 @@ const TwineRouter = require('./common/router');
 
 require('core-js');
 
+
 /* Start the application after loading the appropriate locale data. */
 
 let userLocale;
@@ -40,7 +42,8 @@ const localeUrlMatch = /locale=([^&]+)&?/.exec(window.location.search);
 
 if (localeUrlMatch) {
 	userLocale = localeUrlMatch[1];
-} else {
+}
+else {
 	userLocale = store.state.pref.locale;
 }
 
@@ -50,7 +53,8 @@ if (typeof userLocale === 'string') {
 	locale.loadViaAjax(userLocale.toLowerCase()).then(() => {
 		TwineRouter.start(TwineApp, '#main');
 	});
-} else {
+}
+else {
 	/*
 	Something has gone pretty wrong; fall back to English as a last resort.
 	*/

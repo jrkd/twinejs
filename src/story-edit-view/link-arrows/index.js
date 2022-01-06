@@ -30,6 +30,11 @@ module.exports = Vue.extend({
 		zoom: {
 			type: Number,
 			required: true
+		},
+
+		goapPlanner:{
+			type: Object,
+			required: false
 		}
 	},
 
@@ -43,15 +48,29 @@ module.exports = Vue.extend({
 		changed.
 		*/
 		// JR -
-		links() {
-			return this.passages.reduce(
-				(result, passage) => {
-					result[passage.name] = uniq(linkParser(passage.text, true));
-					return result;
-				},
+		// links() {
+		// 	return this.passages.reduce(
+		// 		(result, passage) => {
+		// 			result[passage.name] = uniq(linkParser(passage.text, true)); //linkParser returns a list of strings that match other passage names.
+		// 			return result;
+		// 		},
 
-				{}
-			);
+		// 		{}
+		// 	);
+		// },
+		links() {
+			let result = {};
+
+			this.passages.forEach((passage) =>{
+				if(passage.otherPassages){
+					result[passage.name] = passage.otherPassages.map(passage => passage.name);
+				}
+				else{
+					result[passage.name] = [];
+				}
+			});
+
+			return result;
 		},
 
 		cssStyle() {

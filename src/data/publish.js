@@ -132,6 +132,8 @@ const publish = module.exports = {
 			`name="${escape(passage.name)}" ` +
 			`tags="${escape(passage.tags.join(' '))}" ` +
 			`position="${passage.left},${passage.top}" ` +
+			`goapPreconditions='${JSON.stringify(passage.goapAction.preconditions)}' ` +
+			`goapEffects='${JSON.stringify(passage.goapAction.effects)}' ` +
 			`size="${passage.width},${passage.height}">` +
 			`${escape(passage.text)}</tw-passagedata>`;
 	}
