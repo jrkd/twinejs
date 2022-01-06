@@ -59,11 +59,12 @@ module.exports = Vue.extend({
 		// 	);
 		// },
 		links() {
+			return window.passageLinks;
 			let result = {};
 
 			this.passages.forEach((passage) =>{
-				if(passage.otherPassages){
-					result[passage.name] = passage.otherPassages.map(passage => passage.name);
+				if(window.passageLinks){
+					window.passageLinks[passage.name] = passage.otherPassages.map(passage => passage.name);
 				}
 				else{
 					result[passage.name] = [];
