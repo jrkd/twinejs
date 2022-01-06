@@ -31,7 +31,9 @@ module.exports = Vue.extend({
 		oldWindowTitle: '',
 		userPassageName: '',
 		saveError: '',
-		origin: null
+		origin: null,
+		goapPreconditions: '',
+		goapEffects: ''
 	}),
 
 	computed: {
@@ -155,19 +157,24 @@ module.exports = Vue.extend({
 		canClose() {
 			if (this.userPassageNameValid) {
 				if (this.userPassageName !== this.passage.name) {
-					this.changeLinksInStory(
-						this.parentStory.id,
-						this.passage.name,
-						this.userPassageName
-					);
-
-					this.updatePassage(
-						this.parentStory.id,
-						this.passage.id,
-						{ name: this.userPassageName }
-					);
+					//JR - Moved the below out of this chekc
 				}
 
+				this.changeLinksInStory(
+					this.parentStory.id,
+					this.passage.name,
+					this.userPassageName
+				);
+
+				this.updatePassage(
+					this.parentStory.id,
+					this.passage.id,
+					{
+						name: this.userPassageName,
+						goapEffects: this.goapEffects,
+						goapPreconditions: this.goapPreconditions
+					}
+				);
 				return true;
 			}
 
@@ -177,6 +184,10 @@ module.exports = Vue.extend({
 
 	ready() {
 		this.userPassageName = this.passage.name;
+
+		//JR - set the view values from the model
+		this.goapPreconditions = this.passage.goapPreconditions;
+		this.goapEffects = this.passage.goapEffects;
 
 		/* Update the window title. */
 

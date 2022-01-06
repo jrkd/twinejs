@@ -42,7 +42,7 @@ module.exports = Vue.extend({
 		arrows-- otherwise, we'd have to recompute every link arrow when one
 		changed.
 		*/
-
+		// JR -
 		links() {
 			return this.passages.reduce(
 				(result, passage) => {
