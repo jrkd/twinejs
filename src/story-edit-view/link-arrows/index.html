@@ -21,7 +21,12 @@
 
 	<template v-for="(start, startLinks) in links" track-by="$index">
 		<template v-for="end in startLinks" track-by="$index">
-			<link-arrow :start="positions[start]" :end="positions[end]"></link-arrow>
+			<link-arrow :start="positions[start]" :end="positions[end]" :dotted="false"></link-arrow>
+			</template>
+			</template>
+			<template v-for="(start, startLinks) in goapLinks" track-by="$index">
+				<template v-for="end in startLinks" track-by="$index">
+					<link-arrow :start="positions[start]" :end="positions[end]" :dotted="true"></link-arrow>
 		</template>
 	</template>
 </svg>

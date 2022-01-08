@@ -51,7 +51,7 @@ module.exports = Vue.extend({
 		changed.
 		*/
 		// JR -
-		links() {
+		goapLinks() {
 			this.goapPlanner.actions = [];
 
 			let startPassage = this.passages.find(passage => passage.id == this.story.startPassage);
@@ -91,6 +91,16 @@ module.exports = Vue.extend({
 			
 
 			return passageLinks;
+		},
+		links() {
+			return this.passages.reduce(
+				(result, passage) => {
+					result[passage.name] = uniq(linkParser(passage.text, true));
+					return result;
+				},
+
+				{}
+			);
 		},
 
 		cssStyle() {
