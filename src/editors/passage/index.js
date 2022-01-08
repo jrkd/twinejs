@@ -36,7 +36,8 @@ module.exports = Vue.extend({
 		saveError: '',
 		origin: null,
 		goapPreconditions: '',
-		goapEffects: ''
+		goapEffects: '',
+		goapCost: 1
 	}),
 
 	computed: {
@@ -171,7 +172,7 @@ module.exports = Vue.extend({
 				);
 
 				this.passage.goapAction.name = this.userPassageName;
-				this.passage.goapAction.cost = 1;//currently dont let them have different costs
+				this.passage.goapAction.cost = Math.max(this.goapCost, 1);//currently dont let them have different costs
 				this.passage.goapAction.preconditions = _.extend(new WorldState(), JSON.parse(this.goapPreconditions));
 				this.passage.goapAction.effects = _.extend(new WorldState(), JSON.parse(this.goapEffects));
 
@@ -196,6 +197,7 @@ module.exports = Vue.extend({
 		//JR - set the view values from the model
 		this.goapPreconditions = JSON.stringify(this.passage.goapAction.preconditions);
 		this.goapEffects = JSON.stringify(this.passage.goapAction.effects);
+		this.goapCost = Math.max(this.passage.goapAction.cost, 1);
 
 		/* Update the window title. */
 

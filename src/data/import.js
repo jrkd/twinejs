@@ -96,6 +96,10 @@ function domToObject(storyEl, forceLastUpdate) {
 					let goapAction = new NodeAction();
 
 					goapAction.name = passageEl.attributes.name.value;
+					goapAction.cost = 1;
+					if(passageEl.attributes.goapCost){
+						goapAction.cost = passageEl.attributes.goapCost.value;
+					}
 					goapAction.preconditions = new WorldState();
 					goapAction.effects = new WorldState();
 					if(passageEl.attributes.goapPreconditions){

@@ -4,6 +4,7 @@
 	</span>
 
 	<tag-editor :passage="passage" :story-id="storyId"></tag-editor>
+	<input name="goapCost" v-model="goapCost" type="number" />
 	<textarea id="goapPreconditions" name="goapPreconditions" v-model="goapPreconditions"></textarea>
 	<textarea id="goapEffects" name="goapEffects" v-model="goapEffects"></textarea>
 	<p class="error" v-if="!userPassageNameValid">
