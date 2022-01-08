@@ -4,9 +4,16 @@
 	</span>
 
 	<tag-editor :passage="passage" :story-id="storyId"></tag-editor>
-	<input name="goapCost" v-model="goapCost" type="number" />
-	<textarea id="goapPreconditions" name="goapPreconditions" v-model="goapPreconditions"></textarea>
-	<textarea id="goapEffects" name="goapEffects" v-model="goapEffects"></textarea>
+	<label style="margin-bottom: 20px; width: 50px;">
+		Cost:
+		<input name="goapCost" v-model="goapCost" type="number" style="width: 100%;" />
+	</label>
+	
+	<div style="position: relative; height: 200px; margin-bottom: 20px;">
+		<div id="goapPreconditions" style="width: 50%;height: 100%; position: absolute;"></div>
+		<div id="goapEffects" style="width: 50%;height: 100%; position: absolute; right: 0">
+		</div>
+	</div>
 	<p class="error" v-if="!userPassageNameValid">
 		{{ 'A passage already exists with this name.' | say }}
 	</p>

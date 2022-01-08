@@ -12,13 +12,13 @@ const { passageDefaults } = require('../../data/store/story');
 const { NodeAction, WorldState } = require('new-astar');
 
 const _ = require('lodash');
+const { default: JSONEditor } = require('jsoneditor');
 
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/hint/show-hint');
 require('../../codemirror/prefix-trigger');
 
 require('./index.less');
-
 /*
 Expose CodeMirror to story formats, currently for Harlowe compatibility.
 */
@@ -37,7 +37,9 @@ module.exports = Vue.extend({
 		origin: null,
 		goapPreconditions: '',
 		goapEffects: '',
-		goapCost: 1
+		goapCost: 1,
+		goapPreconditionsEditor: null,
+		goapEffectsEditor: null
 	}),
 
 	computed: {
@@ -173,8 +175,8 @@ module.exports = Vue.extend({
 
 				this.passage.goapAction.name = this.userPassageName;
 				this.passage.goapAction.cost = Math.max(this.goapCost, 1);//currently dont let them have different costs
-				this.passage.goapAction.preconditions = _.extend(new WorldState(), JSON.parse(this.goapPreconditions));
-				this.passage.goapAction.effects = _.extend(new WorldState(), JSON.parse(this.goapEffects));
+				this.passage.goapAction.preconditions = _.extend(new WorldState(), this.goapPreconditionsEditor.get());
+				this.passage.goapAction.effects = _.extend(new WorldState(), this.goapEffectsEditor.get());
 
 				this.updatePassage(
 					this.parentStory.id,
@@ -258,6 +260,34 @@ module.exports = Vue.extend({
 		else {
 			this.$refs.codemirror.$cm.execCommand('goDocEnd');
 		}
+
+		const $preconditions = document.getElementById("goapPreconditions");
+		const $effects = document.getElementById("goapEffects");
+
+		let preconditionsEditorName = "Pre-conditions";
+		let effectsEditorName = "Effects";
+
+		if(this.passage.id == this.parentStory.startPassage){
+			preconditionsEditorName = "Initial State of the world";
+			effectsEditorName = "Goal state to reach";
+		}
+		this.goapPreconditionsEditor = new JSONEditor($preconditions, {
+			"search": false,
+			"mainMenuBar": false,
+			"navigationBar": false,
+			"limitDragging": true,
+			"name":preconditionsEditorName
+		});
+		this.goapEffectsEditor = new JSONEditor($effects, {
+			"search": false,
+			"mainMenuBar": false,
+			"navigationBar": false,
+			"limitDragging": true,
+			"name": effectsEditorName
+		});
+
+		this.goapPreconditionsEditor.set(this.passage.goapAction.preconditions);
+		this.goapEffectsEditor.set(this.passage.goapAction.effects);
 	},
 
 	destroyed() {
