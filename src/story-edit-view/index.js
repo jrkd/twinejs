@@ -10,7 +10,7 @@ const domEvents = require('../vue/mixins/dom-events');
 const locale = require('../locale');
 const { passageDefaults } = require('../data/store/story');
 const zoomSettings = require('./zoom-settings');
-const { Planner, GoalNode, WorldState, AStar } = require('new-astar');
+const { Planner, GoalNode, WorldState, AStar, NodeAction } = require('new-astar');
 
 const _ = require('lodash');
 //const GoapStuff = require('../goap-demo');
@@ -341,8 +341,13 @@ module.exports = Vue.extend({
 			}
 
 			/* Add it to our collection. */
+			let newAction = new NodeAction();
 
-			this.createPassage(this.story.id, { name, left, top });
+			newAction.effects = new WorldState();
+			newAction.preconditions = new WorldState();
+			newAction.cost = 1;
+			newAction.name = name;
+			this.createPassage(this.story.id, { name, left, top, goapAction: newAction });
 
 			/*
 			Then position it so it doesn't overlap any others, and save it
