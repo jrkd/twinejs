@@ -170,19 +170,17 @@ module.exports = Vue.extend({
 					this.userPassageName
 				);
 
-				let goapAction = new NodeAction();
-
-				goapAction.name = this.userPassageName;
-				goapAction.cost = 1;//currently dont let them have different costs
-				goapAction.preconditions = _.extend(new WorldState(), JSON.parse(this.goapPreconditions));
-				goapAction.effects = _.extend(new WorldState(), JSON.parse(this.goapEffects));
+				this.passage.goapAction.name = this.userPassageName;
+				this.passage.goapAction.cost = 1;//currently dont let them have different costs
+				this.passage.goapAction.preconditions = _.extend(new WorldState(), JSON.parse(this.goapPreconditions));
+				this.passage.goapAction.effects = _.extend(new WorldState(), JSON.parse(this.goapEffects));
 
 				this.updatePassage(
 					this.parentStory.id,
 					this.passage.id,
 					{
 						name: this.userPassageName,
-						goapAction: goapAction
+						goapAction: this.passage.goapAction
 					}
 				);
 				return true;

@@ -152,7 +152,6 @@ module.exports = Vue.extend({
 				{}
 			);
 		},
-
 		story() {
 			return this.allStories.find(story => story.id === this.storyId);
 		},

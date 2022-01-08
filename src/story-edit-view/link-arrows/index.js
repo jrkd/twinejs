@@ -3,6 +3,7 @@ Draws connector lines between passages.
 */
 
 const uniq = require('lodash.uniq');
+const { Planner, AStar, GoalNode } = require('new-astar');
 const Vue = require('vue');
 const linkParser = require('../../data/link-parser');
 
@@ -11,12 +12,19 @@ require('./index.less');
 module.exports = Vue.extend({
 	template: require('./index.html'),
 
+	data: () => ({
+		goapPlanner: new Planner()
+	}),
 	props: {
 		passages: {
 			type: Array,
 			required: true
 		},
 
+		story:{
+			type: Object,
+			required: true
+		},
 		/*
 		The positions of the passages, indexed by passage name. Each entry
 		should contain top, left, width and height properties.
@@ -30,11 +38,6 @@ module.exports = Vue.extend({
 		zoom: {
 			type: Number,
 			required: true
-		},
-
-		goapPlanner:{
-			type: Object,
-			required: false
 		}
 	},
 
@@ -48,30 +51,46 @@ module.exports = Vue.extend({
 		changed.
 		*/
 		// JR -
-		// links() {
-		// 	return this.passages.reduce(
-		// 		(result, passage) => {
-		// 			result[passage.name] = uniq(linkParser(passage.text, true)); //linkParser returns a list of strings that match other passage names.
-		// 			return result;
-		// 		},
-
-		// 		{}
-		// 	);
-		// },
 		links() {
-			return window.passageLinks;
-			let result = {};
+			this.goapPlanner.actions = [];
 
-			this.passages.forEach((passage) =>{
-				if(window.passageLinks){
-					window.passageLinks[passage.name] = passage.otherPassages.map(passage => passage.name);
-				}
-				else{
-					result[passage.name] = [];
+			let startPassage = this.passages.find(passage => passage.id == this.story.startPassage);
+			let startNode = new GoalNode();
+
+			startNode.state = startPassage.goapAction.preconditions;
+			
+			let goalNode = new GoalNode();
+
+			goalNode.state = startPassage.goapAction.effects;
+
+			this.passages.forEach(passage => {
+				if(passage.id != startPassage.id){
+					this.goapPlanner.actions.push(passage.goapAction);
 				}
 			});
+			this.goapPlanner.preprocessGraph(startNode);
 
-			return result;
+			let passageLinks = {};
+			let results = AStar.search(this.goapPlanner, startNode, goalNode);
+			
+
+			if(results.length > 0){
+				passageLinks[startPassage.name] = this.passages.filter(passage => passage.name == results[0].action.name).map(passage => passage.name);
+				while(results.length > 1){
+					let firstEdge = results[0];
+					let secondEdge = results[1];
+	
+					let thisPassage = this.passages.find(passage => passage.name == firstEdge.action.name);
+	
+					passageLinks[thisPassage.name] = this.passages
+						.filter(passage => passage.name == secondEdge.action.name)
+						.map(passage => passage.name);
+					results = results.slice(1);
+				}
+			}
+			
+
+			return passageLinks;
 		},
 
 		cssStyle() {
