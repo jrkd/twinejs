@@ -5,6 +5,7 @@ time. As a result, saving requires that you start and end a transaction
 manually. This minimizes the number of writes to local storage.
 */
 
+const { NodeAction, WorldState } = require('new-astar');
 let { createStory } = require('../actions/story');
 let { passageDefaults, storyDefaults } = require('../store/story');
 let commaList = require('./comma-list');
@@ -172,6 +173,10 @@ const story = module.exports = {
 				let newPassage = JSON.parse(
 					window.localStorage.getItem('twine-passages-' + id)
 				);
+				
+				newPassage.goapAction = _.extend(new NodeAction(), newPassage.goapAction);
+				newPassage.goapAction.preconditions = _.extend(new WorldState(), newPassage.goapAction.preconditions);
+				newPassage.goapAction.effects = _.extend(new WorldState(), newPassage.goapAction.effects);
 
 				if (!newPassage || !newPassage.story) {
 					console.warn(
