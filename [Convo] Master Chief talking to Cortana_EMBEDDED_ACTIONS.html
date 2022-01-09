@@ -17599,11 +17599,15 @@ class TwineDemo {
             if (window.plans && window.plans.length > 0) {
                 window.plans.forEach(plan => {
                     if (plan.currentActionPlan[0]) {
+                        let linkText = plan.currentActionPlan[0].action.name;
+                        if (window.defaultLabelName) {
+                            linkText = window.defaultLabelName;
+                        }
                         $(".passage").append($("<a>")
                             .attr("data-goap-link", plan.currentGoalName)
                             .attr("href", "#next-goap-step")
                             .attr("style", "display:block")
-                            .text(plan.currentActionPlan[0].action.name).prop('outerHTML'));
+                            .text(linkText).prop('outerHTML'));
                     }
                 });
             }
@@ -17647,32 +17651,35 @@ const GlobalDataPlanning_1 = __webpack_require__(18);
 class DataRetrieval {
     static loadDataFromPassages() {
         let result = new GlobalDataPlanning_1.GlobalDataPlanning();
-        const passagesInitialStateJSON = DataRetrieval.getJSONFromPassage(window.story.passages[1], '/*START-INITIAL', 'END-INITIAL*/');
-        if (passagesInitialStateJSON != null && passagesInitialStateJSON.length > 0) {
-            result.currentWorldState = new new_astar_1.WorldState();
-            result.currentWorldState = $.extend(result.currentWorldState, JSON.parse(passagesInitialStateJSON));
+        const $story = $("tw-storydata");
+        const firstPassageID = $story.attr("startnode");
+        const $firstPassage = $("tw-passagedata[pid='" + firstPassageID + "']");
+        result.currentWorldState = new new_astar_1.WorldState();
+        if ($firstPassage.attr('goappreconditions')) {
+            result.currentWorldState = $.extend(result.currentWorldState, JSON.parse($firstPassage.attr('goappreconditions')));
         }
-        const passagesGoalStateJSON = DataRetrieval.getJSONFromPassage(window.story.passages[1], '/*START-GOAL', 'END-GOAL*/');
-        if (passagesGoalStateJSON != null && passagesGoalStateJSON.length > 0) {
-            result.goalStateJSON = JSON.parse(passagesGoalStateJSON);
+        if ($firstPassage.attr('goapeffects')) {
+            result.goalStateJSON = JSON.parse($firstPassage.attr('goapeffects'));
         }
         let basicActionset = new ActionSet_1.ActionSet();
         basicActionset.name = "default";
         basicActionset.actions = [];
-        window.story.passages.forEach((passage) => {
-            const strActionDefintion = DataRetrieval.getJSONFromPassage(passage);
-            if (strActionDefintion.length > 0) {
-                console.log(strActionDefintion);
-                const actionJSON = JSON.parse(strActionDefintion);
-                let action = new new_astar_1.NodeAction();
-                action.cost = 1;
-                action = $.extend(action, actionJSON);
-                action.name = passage.name;
-                action.preconditions = $.extend(new new_astar_1.WorldState(), actionJSON.preconditions);
-                action.effects = $.extend(new new_astar_1.WorldState(), actionJSON.effects);
-                basicActionset.actions.push(action);
+        $("tw-passagedata[pid!='" + firstPassageID + "']").each((_, item) => {
+            const $passage = $(item);
+            let action = new new_astar_1.NodeAction();
+            action.name = $passage.attr("name");
+            if ($passage.attr("goapcost")) {
+                action.cost = Math.max(parseInt($passage.attr("goapcost")), 1);
             }
+            if ($passage.attr("goappreconditions")) {
+                action.preconditions = $.extend(new new_astar_1.WorldState(), JSON.parse($passage.attr("goappreconditions")));
+            }
+            if ($passage.attr("goapeffects")) {
+                action.effects = $.extend(new new_astar_1.WorldState(), JSON.parse($passage.attr("goapeffects")));
+            }
+            basicActionset.actions.push(action);
         });
+        window.defaultLabelName = $story.attr("goapdefaultlabel");
         result.actionSets = [basicActionset];
         return result;
     }
@@ -18333,7 +18340,7 @@ Here, I&#39;ll wipe my memory so you can save face when you decide later on you 
 
 ...
 
-just an algorithm that was written by somebody and executed. </tw-passagedata><tw-passagedata pid="19" name="Do you.. have a body?" tags="" position="308,471" goapPreconditions='{"cortanaFeelings":true}' goapEffects='{"knowThatAIDontHaveBodies":true}' goapCost='1' size="200,100">No.. 
+just an algorithm that was written by somebody and executed. </tw-passagedata><tw-passagedata pid="19" name="Do you.. have a body?" tags="" position="462,491" goapPreconditions='{"cortanaFeelings":true}' goapEffects='{"knowThatAIDontHaveBodies":true}' goapCost='1' size="200,100">No.. 
 
 No matter how much I would like to have a body right now..
 
