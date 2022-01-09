@@ -101,7 +101,7 @@ function domToObject(storyEl, forceLastUpdate) {
 					goapAction.name = passageEl.attributes.name.value;
 					goapAction.cost = 1;
 					if(passageEl.attributes.goapCost){
-						goapAction.cost = passageEl.attributes.goapCost.value;
+						goapAction.cost = Math.max(parseInt(passageEl.attributes.goapCost.value), 1);
 					}
 					goapAction.preconditions = new WorldState();
 					goapAction.effects = new WorldState();
