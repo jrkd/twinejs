@@ -7,6 +7,7 @@ const Vue = require('vue');
 const locale = require('../../locale');
 const { thenable } = require('../../vue/mixins/thenable');
 const { changeLinksInStory, updatePassage } = require('../../data/actions/passage');
+const { updateStory } = require('../../data/actions/story');
 const { loadFormat } = require('../../data/actions/story-format');
 const { passageDefaults } = require('../../data/store/story');
 const { NodeAction, WorldState } = require('new-astar');
@@ -39,7 +40,8 @@ module.exports = Vue.extend({
 		goapEffects: '',
 		goapCost: 1,
 		goapPreconditionsEditor: null,
-		goapEffectsEditor: null
+		goapEffectsEditor: null,
+		goapDefaultLabel: ''
 	}),
 
 	computed: {
@@ -80,7 +82,12 @@ module.exports = Vue.extend({
 					passage.id !== this.passage.id
 			));
 		},
-		
+		isFirstPassage(){
+			return this.parentStory.startPassage === this.passage.id;
+		},
+		firstPassage(){
+			return this.parentStory.passages.find(passage => passage.id === this.parentStory.startPassage);
+		},
 		autocompletions() {
 			return this.parentStory.passages.map(passage => passage.name);
 		}
@@ -173,6 +180,16 @@ module.exports = Vue.extend({
 					this.userPassageName
 				);
 
+				if(this.isFirstPassage && this.parentStory.goapDefaultLabel !== this.goapDefaultLabel){
+					this.parentStory.goapDefaultLabel = this.goapDefaultLabel;
+					this.updateStory(this.parentStory.id,
+						{
+							goapDefaultLabel: this.parentStory.goapDefaultLabel
+						}
+					);
+				}
+
+
 				this.passage.goapAction.name = this.userPassageName;
 				this.passage.goapAction.cost = Math.max(this.goapCost, 1);//currently dont let them have different costs
 				this.passage.goapAction.preconditions = _.extend(new WorldState(), this.goapPreconditionsEditor.get());
@@ -200,6 +217,7 @@ module.exports = Vue.extend({
 		this.goapPreconditions = JSON.stringify(this.passage.goapAction.preconditions);
 		this.goapEffects = JSON.stringify(this.passage.goapAction.effects);
 		this.goapCost = Math.max(this.passage.goapAction.cost, 1);
+		this.goapDefaultLabel = this.parentStory.goapDefaultLabel;
 
 		/* Update the window title. */
 
@@ -304,7 +322,8 @@ module.exports = Vue.extend({
 		actions: {
 			changeLinksInStory,
 			updatePassage,
-			loadFormat
+			loadFormat,
+			updateStory
 		},
 
 		getters: {

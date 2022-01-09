@@ -8,6 +8,11 @@
 		Cost:
 		<input name="goapCost" v-model="goapCost" type="number" style="width: 100%;" />
 	</label>
+	<label style="margin-bottom: 20px;" v-if="isFirstPassage">
+		Link to the next action in the plan:
+		<input name="goapDefaultLabel" v-model="goapDefaultLabel" type="text"
+			placeholder="<Leave this empty to use the action names as links>" style="width: 67%" />
+	</label>
 	
 	<div style="position: relative; height: 200px; margin-bottom: 20px;">
 		<div id="goapPreconditions" style="width: 50%;height: 100%; position: absolute;"></div>

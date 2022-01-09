@@ -78,6 +78,9 @@ function domToObject(storyEl, forceLastUpdate) {
 					},
 					{}
 				),
+		goapDefaultLabel:
+			storyEl.attributes.goapDefaultLabel ?
+				storyEl.attributes.goapDefaultLabel.value : '',
 		passages:
 			Array.from(storyEl.querySelectorAll(selectors.passageData))
 				.map(passageEl => {

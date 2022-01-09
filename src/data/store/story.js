@@ -228,7 +228,8 @@ const storyStore = (module.exports = {
 		stylesheet: '',
 		script: '',
 		storyFormat: '',
-		storyFormatVersion: ''
+		storyFormatVersion: '',
+		goapDefaultLabel: ''
 	},
 
 	passageDefaults: {

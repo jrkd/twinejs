@@ -113,6 +113,7 @@ const publish = module.exports = {
 			`zoom="${escape(story.zoom)}" ` +
 			`format="${escape(story.storyFormat)}" ` +
 			`format-version="${escape(story.storyFormatVersion)}" ` +
+			`goapDefaultLabel="${escape(story.goapDefaultLabel)}" ` +
 			`options="${escape(formatOptions)}" hidden>` +
 			`<style role="stylesheet" id="twine-user-stylesheet" ` +
 			`type="text/twine-css">` + story.stylesheet + `</style>` +
