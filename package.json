@@ -100,7 +100,7 @@
 		"webpack-cli": "^3.1.2",
 		"webpack-dev-server": "^3.7.2",
 		"yargs": "^6.6.0",
-		"new-astar": "git+ssh://git@github.com:jrkd/typescript-astar-lib",
+		"new-astar": "jrkd/typescript-astar-lib",
 		"jsoneditor": "*"
 	}
 }
