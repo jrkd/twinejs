@@ -301,7 +301,10 @@ module.exports = Vue.extend({
 			"mainMenuBar": false,
 			"navigationBar": false,
 			"limitDragging": true,
-			"name": effectsEditorName
+			"name": effectsEditorName,
+			onClassName: function({ path, field, value }) {
+				return 'test-class';
+			}
 		});
 
 		this.goapPreconditionsEditor.set(this.passage.goapAction.preconditions);

@@ -4,7 +4,6 @@
 
 'use strict';
 const moment = require('moment');
-const { GoalNode, Planner, AStar } = require('new-astar');
 const Vue = require('vue');
 const ZoomTransition = require('../zoom-transition');
 
@@ -94,74 +93,6 @@ module.exports = Vue.extend({
 				.$mountTo(this.$el)
 				.then(
 					() => {
-						this.goapPlanner = new Planner();
-						this.goapPlanner.actions = [];
-
-						let startNode, goalNode = null;
-
-						let startPassage = this.story.passages.find(passage => passage.id == this.story.startPassage);
-
-						this.story.passages.forEach(passage => {
-							if(passage.id == startPassage.id){
-								startNode = new GoalNode();
-								startNode.state = passage.goapAction.preconditions;
-
-								goalNode = new GoalNode();
-								goalNode.state = passage.goapAction.effects;
-							}
-							else{
-								this.goapPlanner.actions.push(passage.goapAction);
-							}
-						});
-
-						
-						console.log("Number of actions:", this.goapPlanner.actions.length);
-						console.log("StartNode JSON", startNode);
-						console.log("GoalNode JSON", goalNode);
-
-						this.goapPlanner.preprocessGraph(startNode);
-
-						//DEBUG HERE
-						window.passageLinks = {};
-						this.story.passages.forEach((passage)=>{
-							if(passage.id == this.story.startPassage){
-								goalNode = new GoalNode();
-								goalNode.state = passage.goapAction.effects;
-	
-								let results = AStar.search(this.goapPlanner, startNode, goalNode);
-								// let otherPassages = this.story.passages.filter((passage) => results.map(edge => edge.action.name).some(actionName => actionName == passage.name) );
-								
-								// results.forEach((edge)=>{
-								// 	let thisPassage = this.story.passages.find(passage => passage.name == edge.action.name);
-								// 	window.passageLinks[thisPassage.name] = this.story.passages.filter(
-								// });
-								
-								while(results.length > 1){
-									let firstEdge = results[0];
-									let secondEdge = results[1];
-
-									let thisPassage = this.story.passages.find(passage => passage.name == firstEdge.action.name);
-
-									window.passageLinks[thisPassage.name] = this.story.passages
-										.filter(passage => passage.name == secondEdge.action.name)
-										.map(passage => passage.name);
-									results = results.slice(1);
-								}
-								// window.passageLinks[passage.name] = otherPassages.map(passage => passage.name);
-								// if(otherPassages.length > 0){
-								// 	return false;
-								// }
-							}
-							
-						});
-						// this.goapPlanner.allEdges.forEach((edge)=>{
-						// 	let passage = this.story.passages.find(passage => passage.goapAction.name == edge.action.name);
-						// 	let adjacentActionNames = edge.nextNode.adjacentEdges.map(adjacentEdge => adjacentEdge.action.name);
-						// 	let otherPassages = this.story.passages.filter((passage) => adjacentActionNames.some(actionName => actionName == passage.name) );
-
-						// 	window.passageLinks[passage.name] = otherPassages.map(passage => passage.name);
-						// });
-
 						return window.location.hash = '#stories/' + this.story.id;
 					}
 

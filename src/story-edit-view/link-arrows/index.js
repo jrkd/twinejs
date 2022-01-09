@@ -35,21 +35,26 @@ module.exports = Vue.extend({
 			type: Object,
 			required: true
 		},
-
+		colorsByGoal:{
+			type: Object,
+			required: true
+		},
 		zoom: {
 			type: Number,
 			required: true
 		}
 	},
 	computed: {
-		/*
-		A list of distinct links between passages, indexed by passage name.
-		This is kept distinct from the positions property so that dragging
-		passages around only triggers a redraw of the affected lines. As such,
-		individual arrows *cannot* depend on the position or existence of other
-		arrows-- otherwise, we'd have to recompute every link arrow when one
-		changed.
-		*/
+		colorsByGoal(){
+			let startPassage = this.passages.find(passage => passage.id == this.story.startPassage);
+			const goalNames = Object.keys(startPassage.goapAction.effects);
+			let colorsByGoal = {};
+
+			goalNames.forEach((name)=>{
+				colorsByGoal[name] = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+			});
+			return colorsByGoal;
+		},
 		// JR -
 		goapLinksByGoal(){
 			this.goapPlanner.actions = [];
@@ -68,9 +73,7 @@ module.exports = Vue.extend({
 
 			const goalNames = Object.keys(startPassage.goapAction.effects);
 			let unmetGoals = [];
-			let metGoalName = "";
 			let resultPlans = {};
-			let results = [];
 
 			for (let index = 0; index < goalNames.length; ++index) {
 				const goalName = goalNames[index];
@@ -81,9 +84,6 @@ module.exports = Vue.extend({
 				let goalResults = AStar.search(this.goapPlanner, startNode, goalNode);
 
 				if (goalResults.length > 0) {
-					results = goalResults;
-
-					metGoalName = goalName;
 					resultPlans[goalName] = goalResults;
 				}
 				else {
@@ -113,12 +113,7 @@ module.exports = Vue.extend({
 				}
 			});
 			
-			
-
 			return passageLinksByGoal;
-		},
-		goapLinksx() {
-			
 		},
 		links() {
 			return this.passages.reduce(

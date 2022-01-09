@@ -18,7 +18,7 @@ function arc(props) {
 }
 
 module.exports = Vue.extend({
-	template: '<path stroke-dasharray="{{dashStyle}}" :d="pathString" class="marker-{{markerType}}"></path>',
+	template: '<path stroke-dasharray="{{dashStyle}}" stroke="{{color}}" :d="pathString" class="marker-{{markerType}}"></path>',
 
 	props: {
 		/*
@@ -48,6 +48,10 @@ module.exports = Vue.extend({
 		dotted: {
 			type: Boolean,
 			required: true
+		},
+		color: {
+			type: String,
+			default: '#666666'
 		}
 	},
 

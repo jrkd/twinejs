@@ -33,7 +33,7 @@
 	<template v-for="(goalName, goapLinks) in goapLinksByGoal" track-by="$index">
 		<template v-for="(startPassageName, passageLinks) in goapLinks" track-by="$index">
 			<template v-for="endPassageName in passageLinks" track-by="$index">
-				<link-arrow :start="positions[startPassageName]" :end="positions[endPassageName]" :dotted="true"></link-arrow>
+				<link-arrow :start="positions[startPassageName]" :color="colorsByGoal[goalName]" :end="positions[endPassageName]" :dotted="true"></link-arrow>
 			</template>
 		</template>
 	</template>
