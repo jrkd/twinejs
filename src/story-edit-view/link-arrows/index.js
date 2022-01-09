@@ -41,7 +41,6 @@ module.exports = Vue.extend({
 			required: true
 		}
 	},
-
 	computed: {
 		/*
 		A list of distinct links between passages, indexed by passage name.
@@ -52,7 +51,7 @@ module.exports = Vue.extend({
 		changed.
 		*/
 		// JR -
-		goapLinks() {
+		goapLinksByGoal(){
 			this.goapPlanner.actions = [];
 
 			let startPassage = this.passages.find(passage => passage.id == this.story.startPassage);
@@ -86,32 +85,40 @@ module.exports = Vue.extend({
 
 					metGoalName = goalName;
 					resultPlans[goalName] = goalResults;
-					break;
 				}
 				else {
 					unmetGoals.push(goalName);
 				}
 			}
 
-			let passageLinks = {};
+			let passageLinksByGoal = {};
 
-			if(results.length > 0){
-				passageLinks[startPassage.name] = this.passages.filter(passage => passage.name == results[0].action.name).map(passage => passage.name);
-				while(results.length > 1){
-					let firstEdge = results[0];
-					let secondEdge = results[1];
-	
-					let thisPassage = this.passages.find(passage => passage.name == firstEdge.action.name);
-	
-					passageLinks[thisPassage.name] = this.passages
-						.filter(passage => passage.name == secondEdge.action.name)
-						.map(passage => passage.name);
-					results = results.slice(1);
+			Object.keys(resultPlans).forEach((goalName) =>{
+				let results = resultPlans[goalName];
+
+				passageLinksByGoal[goalName] = {};
+				if(results.length > 0){
+					passageLinksByGoal[goalName][startPassage.name] = this.passages.filter(passage => passage.name == results[0].action.name).map(passage => passage.name);
+					while(results.length > 1){
+						let firstEdge = results[0];
+						let secondEdge = results[1];
+		
+						let thisPassage = this.passages.find(passage => passage.name == firstEdge.action.name);
+		
+						passageLinksByGoal[goalName][thisPassage.name] = this.passages
+							.filter(passage => passage.name == secondEdge.action.name)
+							.map(passage => passage.name);
+						results = results.slice(1);
+					}
 				}
-			}
+			});
+			
 			
 
-			return passageLinks;
+			return passageLinksByGoal;
+		},
+		goapLinksx() {
+			
 		},
 		links() {
 			return this.passages.reduce(
