@@ -3,9 +3,10 @@ Draws connector lines between passages.
 */
 
 const uniq = require('lodash.uniq');
-const { Planner, AStar, GoalNode } = require('new-astar');
+const { Planner, AStar, GoalNode, WorldState } = require('new-astar');
 const Vue = require('vue');
 const linkParser = require('../../data/link-parser');
+const _ = require('lodash');
 
 require('./index.less');
 
@@ -59,10 +60,6 @@ module.exports = Vue.extend({
 
 			startNode.state = startPassage.goapAction.preconditions;
 			
-			let goalNode = new GoalNode();
-
-			goalNode.state = startPassage.goapAction.effects;
-
 			this.passages.forEach(passage => {
 				if(passage.id != startPassage.id){
 					this.goapPlanner.actions.push(passage.goapAction);
@@ -70,9 +67,33 @@ module.exports = Vue.extend({
 			});
 			this.goapPlanner.preprocessGraph(startNode);
 
+			const goalNames = Object.keys(startPassage.goapAction.effects);
+			let unmetGoals = [];
+			let metGoalName = "";
+			let resultPlans = {};
+			let results = [];
+
+			for (let index = 0; index < goalNames.length; ++index) {
+				const goalName = goalNames[index];
+				let goalNode = new GoalNode();
+
+				goalNode.state = _.extend(new WorldState(), startPassage.goapAction.effects[goalName]);
+
+				let goalResults = AStar.search(this.goapPlanner, startNode, goalNode);
+
+				if (goalResults.length > 0) {
+					results = goalResults;
+
+					metGoalName = goalName;
+					resultPlans[goalName] = goalResults;
+					break;
+				}
+				else {
+					unmetGoals.push(goalName);
+				}
+			}
+
 			let passageLinks = {};
-			let results = AStar.search(this.goapPlanner, startNode, goalNode);
-			
 
 			if(results.length > 0){
 				passageLinks[startPassage.name] = this.passages.filter(passage => passage.name == results[0].action.name).map(passage => passage.name);
