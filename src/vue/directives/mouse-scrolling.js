@@ -42,23 +42,25 @@ module.exports = {
 				function handleKeyDown(e) {
 					/* Space bar */
 
-					if (e.which === 32) {
-						if (!scrolling && !spaceHeld) {
-							spaceHeld = true;
-							body.classList.add('mouseScrollReady');
-						}
 
-						/*
-						preventDefault() stops the page from scrolling downward
-						when the space bar is held by itself. We need to take
-						care to avoid gobbling up keystrokes for form elements.
-						*/
+					// JR - 15/01/22 - This was causing issues for us, and doesnt seem important.
+					// if (e.which === 32) {
+					// 	if (!scrolling && !spaceHeld) {
+					// 		spaceHeld = true;
+					// 		body.classList.add('mouseScrollReady');
+					// 	}
 
-						if (document.activeElement.nodeName !== 'INPUT' &&
-							document.activeElement.nodeName !== 'TEXTAREA') {
-							e.preventDefault();
-						}
-					}
+					// 	/*
+					// 	preventDefault() stops the page from scrolling downward
+					// 	when the space bar is held by itself. We need to take
+					// 	care to avoid gobbling up keystrokes for form elements.
+					// 	*/
+
+					// 	if (document.activeElement.nodeName !== 'INPUT' &&
+					// 		document.activeElement.nodeName !== 'TEXTAREA') {
+					// 		e.preventDefault();
+					// 	}
+					// }
 				}
 
 				function handleMouseDown(e) {

@@ -35,11 +35,14 @@ module.exports = Vue.extend({
 				},
 
 				origin: e.target
-			}).then(name => {
-				this.createStory({name});
-
+			})
+			.then(async (name)=>{
+				this.name = name;
+				return fetch("/goal-twine-compiled.js");
+			}).then(response => response.text())
+			.then(responseText => {
+				this.createStory({name:this.name, script: responseText});
 				/* Allow the appearance animation to complete. */
-
 				window.setTimeout(() => {
 					this.$dispatch(
 						'story-edit',

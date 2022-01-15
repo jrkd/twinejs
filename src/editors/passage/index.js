@@ -325,6 +325,10 @@ module.exports = Vue.extend({
 				this.goapEffectsEditor.set(this.passage.goapAction.effects);
 			}
 		}
+		else{
+			this.goapPreconditionsEditor.set(this.passage.goapAction.preconditions);
+			this.goapEffectsEditor.set(this.passage.goapAction.effects);
+		}
 
 		this.goapPreconditionsEditor.expandAll();
 		this.goapEffectsEditor.expandAll();

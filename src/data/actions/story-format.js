@@ -251,8 +251,8 @@ const actions = (module.exports = {
 
 		if (typeof store.state.pref.defaultFormat !== 'object') {
 			setPref(store, 'defaultFormat', {
-				name: 'Harlowe',
-				version: '3.2.3'
+				name: 'Snowman',
+				version: '1.4.0'
 			});
 		}
 
