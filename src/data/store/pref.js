@@ -5,7 +5,7 @@
 module.exports = {
 	state: {
 		appTheme: 'light',
-		defaultFormat: 'Harlowe',
+		defaultFormat: {name:'Snowman', version: '1.4.0'},
 		donateShown: false,
 		firstRunTime: new Date().getTime(),
 		lastUpdateSeen: '',
