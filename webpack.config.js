@@ -108,7 +108,14 @@ if (isRelease) {
 		test: /\.js$/,
 		exclude: /node_modules/,
 		loader: 'babel-loader',
-		options: {presets: ['@babel/preset-env']}
+		options: {"presets": [
+			[
+			  "@babel/preset-env",
+			  {
+					"targets": ">0.25%, not dead"
+			  }
+			]
+		  ]}
 	});
 }
 
