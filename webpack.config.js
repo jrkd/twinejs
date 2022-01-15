@@ -112,7 +112,7 @@ if (isRelease) {
 			[
 			  "@babel/preset-env",
 			  {
-					"targets": ">0.25%, not dead"
+					"targets": ">25%"
 			  }
 			]
 		  ]}
