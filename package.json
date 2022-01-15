@@ -53,9 +53,7 @@
 		"unfetch": "^3.0.0",
 		"vue": "^1.0.18",
 		"vue-router": "^0.7.13",
-		"vuex": "^1.0.0"
-	},
-	"devDependencies": {
+		"vuex": "^1.0.0",
 		"@babel/core": "^7.1.2",
 		"@babel/preset-env": "^7.1.0",
 		"acorn": "^5.7.4",
@@ -102,5 +100,7 @@
 		"yargs": "^6.6.0",
 		"new-astar": "jrkd/typescript-astar-lib",
 		"jsoneditor": "*"
+	},
+	"devDependencies": {
 	}
 }
