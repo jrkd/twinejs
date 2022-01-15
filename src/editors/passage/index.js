@@ -302,13 +302,33 @@ module.exports = Vue.extend({
 			"navigationBar": false,
 			"limitDragging": true,
 			"name": effectsEditorName,
+			"mode": "tree",
 			onClassName: function({ path, field, value }) {
 				return 'test-class';
 			}
 		});
 
-		this.goapPreconditionsEditor.set(this.passage.goapAction.preconditions);
-		this.goapEffectsEditor.set(this.passage.goapAction.effects);
+		
+
+		if(this.passage.id == this.parentStory.startPassage ) {
+			if(Object.keys(this.passage.goapAction.preconditions).length === 0){
+				this.goapPreconditionsEditor.set({"exampleCondition":false});
+			}
+			else{
+				this.goapPreconditionsEditor.set(this.passage.goapAction.preconditions);
+			}
+
+			if(Object.keys(this.passage.goapAction.effects).length === 0){
+				this.goapEffectsEditor.set({"ExampleGoal1":{"exampleCondition":true}});
+			}
+			else{
+				this.goapEffectsEditor.set(this.passage.goapAction.effects);
+			}
+		}
+
+		this.goapPreconditionsEditor.expandAll();
+		this.goapEffectsEditor.expandAll();
+		
 	},
 
 	destroyed() {
