@@ -4,15 +4,48 @@
 	</span>
 
 	<tag-editor :passage="passage" :story-id="storyId"></tag-editor>
-	<label style="margin-bottom: 20px; width: 50px;">
+<p style="font-size: 20px;margin-bottom: 0;">Goal Twine</p>
+<label style="margin-bottom: 20px; width: 50px;" v-if="!isFirstPassage">
 		Cost:
 		<input name="goapCost" v-model="goapCost" type="number" style="width: 100%;" />
 	</label>
-	<label style="margin-bottom: 20px;" v-if="isFirstPassage">
-		Link to the next action in the plan:
-		<input name="goapDefaultLabel" v-model="goapDefaultLabel" type="text"
-			placeholder="<Leave this empty to use the action names as links>" style="width: 67%" />
-	</label>
+	<p style="margin-bottom: 20px;" v-if="isFirstPassage">
+		<b>Introduction to Goal Twine</b><br>
+		Welcome to using this mod of TwineJS. This mod adds a way to generate passage links based on what events happen in a
+		passage, and what theoretically needed to happen for it to make sense for the reader to be viewing that passage.<br>
+		<br>
+		At the start of the story, you define the initial state of things in the world before the story begun (on the
+		left).<br>
+		And what 'Goals' or objectives the story is trying to achieve (on the right).<br>
+	
+		<br>
+		Each other passage will have a set of preconditions or requirements for the story to show that passage, <br>
+		and a set of effects - what happens to the story due to the events of that passage.<br><br>
+		Which passage is shown next in a story is calculated by how it helps the story reach the objective and what needed
+		to
+		happen before it is reached.<br>
+		<br>
+		<b>Implementation notes</b><br>
+		If you know JSON, these editors below should be familiar. <br>They can be nested like usual JSON, and can be a
+		string,
+		number or true/false.<br>
+		It will handle adding numbers, eg. numBananas: 0, goal - numBananas: 5, but the condition needs to start with
+		'num'.<br>
+		Its also unadvised, as its very expensive & cant subtract numbers, or handle decimal numbers
+		<br><br>
+		With goals, because you can have multiple they specifically need to be in the format:<br> {'GoalName1':
+		{"conditionToMeetThatGoal": true}, 'GoalName2': {"otherCondition": false}}<br>
+		<br>
+		With multiple goals, each that successfully finds a story through the passages to their outcome will be offered as a
+		different passage link.<br>
+		The name of each link will be the title of the next passage toward that goal.
+		<br>
+	</p>
+<label style="margin-bottom: 20px;" v-if="isFirstPassage">
+	Link to the next action in the plan:
+	<input name="goapDefaultLabel" v-model="goapDefaultLabel" type="text"
+		placeholder="<Leave this empty to use the action names as links>" style="width: 67%" />
+</label>
 	
 	<div style="position: relative; height: 200px; margin-bottom: 20px;z-index:10;">
 		<div id="goapPreconditions" style="width: 50%;height: 100%; position: absolute;"></div>

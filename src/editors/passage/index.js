@@ -287,7 +287,7 @@ module.exports = Vue.extend({
 
 		if(this.passage.id == this.parentStory.startPassage){
 			preconditionsEditorName = "Initial state of the world";
-			effectsEditorName = "Goals";
+			effectsEditorName = "Goals/Objectives";
 		}
 		this.goapPreconditionsEditor = new JSONEditor($preconditions, {
 			"search": false,
